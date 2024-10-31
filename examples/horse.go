@@ -14,7 +14,7 @@ import (
 
 var (
 	schemaFile = flag.String("schema", "horse.json", "Path to the schema JSON file")
-	url        = flag.String("url", "https://racing.hkjc.com/racing/information/Chinese/Horse/Horse.aspx?HorseId=HK_2021_G372", "URL to extract data from")
+	url        = flag.String("url", "https://racing.hkjc.com/racing/information/Chinese/Horse/Horse.aspx?HorseId=HK_2021_G372&Option=1", "URL to extract data from")
 )
 
 func main() {
