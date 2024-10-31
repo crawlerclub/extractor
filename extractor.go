@@ -117,11 +117,14 @@ func (e *Extractor) extractField(element *rod.Element, field Field) (interface{}
 		for _, nestedField := range field.Fields {
 			nestedValue, err := e.extractField(nestedElement, nestedField)
 			if err != nil {
-				return nil, err
+				continue
 			}
 			nestedItem[nestedField.Name] = nestedValue
 		}
-		return nestedItem, nil
+		if len(nestedItem) > 0 {
+			return nestedItem, nil
+		}
+		return nil, fmt.Errorf("all nested fields failed to extract")
 	case "list":
 		elements, err := element.ElementsX(field.Selector)
 		if err != nil {
