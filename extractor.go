@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 )
 
 type Schema struct {
@@ -39,7 +40,8 @@ type ExtractionError struct {
 }
 
 func NewExtractor(schema Schema) *Extractor {
-	browser := rod.New().MustConnect()
+	launcher := rod.New().ControlURL(launcher.New().Set("--no-sandbox").MustLaunch())
+	browser := launcher.MustConnect()
 	return &Extractor{Schema: schema, Browser: browser}
 }
 
