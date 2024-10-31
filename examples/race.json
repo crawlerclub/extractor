@@ -75,27 +75,27 @@
             "fields": [
                 {
                     "name": "place",
-                    "selector": "./td[1]",
+                    "selector": ".//td[count(//td[contains(text(), '名次')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "horse_no",
-                    "selector": "./td[2]",
+                    "selector": ".//td[count(//td[contains(text(), '馬號')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "horse",
-                    "selector": "./td[3]/a",
+                    "selector": ".//td[count(//td[contains(text(), '馬名')]/preceding-sibling::td) + 1]",
                     "type": "nested",
                     "fields": [
                         {
                             "name": "name",
-                            "selector": "./text()",
+                            "selector": ".",
                             "type": "text"
                         },
                         {
                             "name": "link",
-                            "selector": ".",
+                            "selector": "./a",
                             "type": "attribute",
                             "attribute": "href"
                         }
@@ -103,17 +103,17 @@
                 },
                 {
                     "name": "jockey",
-                    "selector": "./td[4]/a",
+                    "selector": ".//td[count(//td[contains(text(), '騎師')]/preceding-sibling::td) + 1]",
                     "type": "nested",
                     "fields": [
                         {
                             "name": "name",
-                            "selector": "./text()",
+                            "selector": ".",
                             "type": "text"
                         },
                         {
                             "name": "link",
-                            "selector": ".",
+                            "selector": "./a|.",
                             "type": "attribute",
                             "attribute": "href"
                         }
@@ -121,17 +121,17 @@
                 },
                 {
                     "name": "trainer",
-                    "selector": "./td[5]/a",
+                    "selector": ".//td[count(//td[contains(text(), '練馬師')]/preceding-sibling::td) + 1]",
                     "type": "nested",
                     "fields": [
                         {
                             "name": "name",
-                            "selector": "./text()",
+                            "selector": ".",
                             "type": "text"
                         },
                         {
                             "name": "link",
-                            "selector": ".",
+                            "selector": "./a|.",
                             "type": "attribute",
                             "attribute": "href"
                         }
@@ -139,37 +139,37 @@
                 },
                 {
                     "name": "actual_weight",
-                    "selector": "./td[6]/text()",
+                    "selector": ".//td[count(//td[contains(text(), '實際')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "horse_weight",
-                    "selector": "./td[7]/text()",
+                    "selector": ".//td[count(//td[contains(text(), '排位')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "draw",
-                    "selector": "./td[8]/text()",
+                    "selector": ".//td[count(//td[contains(text(), '檔位')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "length_behind",
-                    "selector": "./td[9]/text()",
+                    "selector": ".//td[count(//td[contains(text(), '距離')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "running_position",
-                    "selector": "./td[10]",
+                    "selector": ".//td[count(//td[contains(text(), '沿途')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "finish_time",
-                    "selector": "./td[11]/text()",
+                    "selector": ".//td[count(//td[contains(text(), '完成')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 },
                 {
                     "name": "win_odds",
-                    "selector": "./td[12]/text()",
+                    "selector": ".//td[count(//td[contains(text(), '獨贏')]/preceding-sibling::td) + 1]",
                     "type": "text"
                 }
             ]
