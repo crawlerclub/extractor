@@ -8,33 +8,62 @@
             "selector": "//div[contains(@class, 'race_tab')]",
             "fields": [
                 {
+                    "name": "race_date_and_venue",
+                    "selector": "//span[contains(@class, 'f_fs13')]/text()",
+                    "type": "text"
+                },
+                {
                     "name": "race_no",
                     "selector": ".//td[contains(text(), '第') and contains(text(), '場')]/text()",
                     "type": "text"
                 },
                 {
                     "name": "class_and_distance",
-                    "selector": ".//td[contains(text(), '第') and contains(text(), '班')]/text()",
+                    "selector": ".//td[contains(text(), '第') and contains(text(), '班')]",
                     "type": "text"
                 },
                 {
                     "name": "track_condition",
-                    "selector": ".//td[contains(text(), '場地狀況')]/following-sibling::td[1]/text()",
+                    "selector": ".//td[contains(text(), '場地狀況')]/following-sibling::td[1]",
                     "type": "text"
                 },
                 {
                     "name": "track_type",
-                    "selector": ".//td[contains(text(), '賽道')]/following-sibling::td[1]/text()",
+                    "selector": ".//td[contains(text(), '賽道')]/following-sibling::td[1]",
                     "type": "text"
                 },
                 {
                     "name": "prize",
-                    "selector": ".//td[contains(text(), 'HK$')]/text()",
+                    "selector": ".//td[contains(text(), 'HK$')]",
                     "type": "text"
                 },
                 {
+                    "name": "race_times",
+                    "selector": ".//td[text()='時間 :']/following-sibling::td",
+                    "type": "list",
+                    "fields": [
+                        {
+                            "name": "time",
+                            "selector": ".",
+                            "type": "text"
+                        }
+                    ]
+                },
+                {
                     "name": "section_times",
-                    "selector": ".//td[contains(text(), '分段時間')]/following-sibling::td[1]",
+                    "selector": ".//td[text()='分段時間 :']/following-sibling::td",
+                    "type": "list",
+                    "fields": [
+                        {
+                            "name": "time",
+                            "selector": ".",
+                            "type": "text"
+                        }
+                    ]
+                },
+                {
+                    "name": "race_type",
+                    "selector": ".//td[contains(text(), '賽道')]/preceding-sibling::td[1]",
                     "type": "text"
                 }
             ]
