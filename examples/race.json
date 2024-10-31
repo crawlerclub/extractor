@@ -1,0 +1,171 @@
+{
+    "name": "Race Results Extractor",
+    "baseSelector": "//div[@id='innerContent']",
+    "fields": [
+        {
+            "name": "race_info",
+            "type": "nested",
+            "selector": "//div[contains(@class, 'race_tab')]",
+            "fields": [
+                {
+                    "name": "race_no",
+                    "selector": ".//td[contains(text(), '第') and contains(text(), '場')]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "class_and_distance",
+                    "selector": ".//td[contains(text(), '第') and contains(text(), '班')]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "track_condition",
+                    "selector": ".//td[contains(text(), '場地狀況')]/following-sibling::td[1]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "track_type",
+                    "selector": ".//td[contains(text(), '賽道')]/following-sibling::td[1]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "prize",
+                    "selector": ".//td[contains(text(), 'HK$')]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "section_times",
+                    "selector": ".//td[contains(text(), '分段時間')]/following-sibling::td[1]",
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "name": "results",
+            "selector": "//div[@class='performance']//table[contains(@class, 'table_bd')]//tbody/tr",
+            "type": "list",
+            "fields": [
+                {
+                    "name": "place",
+                    "selector": "./td[1]",
+                    "type": "text"
+                },
+                {
+                    "name": "horse_no",
+                    "selector": "./td[2]",
+                    "type": "text"
+                },
+                {
+                    "name": "horse",
+                    "selector": "./td[3]/a",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "selector": "./text()",
+                            "type": "text"
+                        },
+                        {
+                            "name": "link",
+                            "selector": ".",
+                            "type": "attribute",
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                {
+                    "name": "jockey",
+                    "selector": "./td[4]/a",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "selector": "./text()",
+                            "type": "text"
+                        },
+                        {
+                            "name": "link",
+                            "selector": ".",
+                            "type": "attribute",
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                {
+                    "name": "trainer",
+                    "selector": "./td[5]/a",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "selector": "./text()",
+                            "type": "text"
+                        },
+                        {
+                            "name": "link",
+                            "selector": ".",
+                            "type": "attribute",
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                {
+                    "name": "actual_weight",
+                    "selector": "./td[6]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "horse_weight",
+                    "selector": "./td[7]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "draw",
+                    "selector": "./td[8]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "length_behind",
+                    "selector": "./td[9]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "running_position",
+                    "selector": "./td[10]",
+                    "type": "text"
+                },
+                {
+                    "name": "finish_time",
+                    "selector": "./td[11]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "win_odds",
+                    "selector": "./td[12]/text()",
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "name": "dividends",
+            "selector": "//div[contains(@class, 'dividend_tab')]//table//tr[position()>1 and string-length(td[1])>0]",
+            "type": "list",
+            "fields": [
+                {
+                    "name": "pool",
+                    "selector": "./td[1]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "combination",
+                    "selector": "./td[2]/text()",
+                    "type": "text"
+                },
+                {
+                    "name": "dividend",
+                    "selector": "./td[3]/text()",
+                    "type": "text"
+                }
+            ]
+        }
+    ]
+} 
