@@ -27,12 +27,28 @@ type Extractor struct {
 
 type ExtractedItem map[string]interface{}
 
+type ExtractionResult struct {
+	Items  []ExtractedItem
+	Errors []ExtractionError
+}
+
+type ExtractionError struct {
+	Field   string
+	Message string
+	URL     string
+}
+
 func NewExtractor(schema Schema) *Extractor {
 	browser := rod.New().MustConnect()
 	return &Extractor{Schema: schema, Browser: browser}
 }
 
-func (e *Extractor) Extract(url string) ([]ExtractedItem, error) {
+func (e *Extractor) Extract(url string) (*ExtractionResult, error) {
+	result := &ExtractionResult{
+		Items:  make([]ExtractedItem, 0),
+		Errors: make([]ExtractionError, 0),
+	}
+
 	page := e.Browser.MustPage(url)
 	defer page.Close()
 
@@ -43,32 +59,37 @@ func (e *Extractor) Extract(url string) ([]ExtractedItem, error) {
 		return nil, fmt.Errorf("failed to find elements with base selector: %v", err)
 	}
 
-	var items []ExtractedItem
 	for _, element := range elements {
-		item, err := e.extractItem(element)
-		if err != nil {
-			// Log the error and continue with the next item
-			fmt.Printf("Error extracting item: %v\n", err)
-			continue
+		item, errs := e.extractItem(element, url)
+		if len(errs) > 0 {
+			result.Errors = append(result.Errors, errs...)
 		}
-		items = append(items, item)
+		if item != nil {
+			result.Items = append(result.Items, item)
+		}
 	}
 
-	return items, nil
+	return result, nil
 }
 
-func (e *Extractor) extractItem(element *rod.Element) (ExtractedItem, error) {
+func (e *Extractor) extractItem(element *rod.Element, url string) (ExtractedItem, []ExtractionError) {
 	item := make(ExtractedItem)
+	var errors []ExtractionError
 
 	for _, field := range e.Schema.Fields {
 		value, err := e.extractField(element, field)
 		if err != nil {
-			return nil, err
+			errors = append(errors, ExtractionError{
+				Field:   field.Name,
+				Message: err.Error(),
+				URL:     url,
+			})
+			continue
 		}
 		item[field.Name] = value
 	}
 
-	return item, nil
+	return item, errors
 }
 
 func (e *Extractor) extractField(element *rod.Element, field Field) (interface{}, error) {

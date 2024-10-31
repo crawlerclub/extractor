@@ -35,12 +35,19 @@ func main() {
 	}
 
 	extractor := extractor.NewExtractor(schema)
-	items, err := extractor.Extract(*url)
+	result, err := extractor.Extract(*url)
 	if err != nil {
 		log.Fatalf("Error extracting data: %v", err)
 	}
 
-	jsonData, err := goutil.JSONMarshalIndent(items, "", "  ")
+	if len(result.Errors) > 0 {
+		log.Println("Extraction completed with errors:")
+		for _, err := range result.Errors {
+			log.Printf("Field '%s' from %s: %s", err.Field, err.URL, err.Message)
+		}
+	}
+
+	jsonData, err := goutil.JSONMarshalIndent(result.Items, "", "  ")
 	if err != nil {
 		log.Fatalf("Error converting results to JSON: %v", err)
 	}
