@@ -173,28 +173,6 @@
                     "type": "text"
                 }
             ]
-        },
-        {
-            "name": "dividends",
-            "selector": "//div[contains(@class, 'dividend_tab')]//table//tr[position()>1 and string-length(td[1])>0]",
-            "type": "list",
-            "fields": [
-                {
-                    "name": "pool",
-                    "selector": "./td[1]/text()",
-                    "type": "text"
-                },
-                {
-                    "name": "combination",
-                    "selector": "./td[2]/text()",
-                    "type": "text"
-                },
-                {
-                    "name": "dividend",
-                    "selector": "./td[3]/text()",
-                    "type": "text"
-                }
-            ]
         }
     ]
 } 
