@@ -86,6 +86,135 @@
             "name": "damsire",
             "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '外祖父')]]/td[last()]",
             "type": "text"
+        },
+        {
+            "name": "race_history",
+            "selector": "//table[contains(@class, 'bigborder')]//tr[position()>1 and td[1]/a]",
+            "type": "list",
+            "fields": [
+                {
+                    "name": "race_id",
+                    "selector": "./td[1]/a",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "text",
+                            "selector": ".",
+                            "type": "text"
+                        },
+                        {
+                            "name": "link",
+                            "selector": ".",
+                            "type": "attribute",
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                {
+                    "name": "race_index",
+                    "selector": "./td[2]",
+                    "type": "text"
+                },
+                {
+                    "name": "race_date",
+                    "selector": "./td[3]",
+                    "type": "text"
+                },
+                {
+                    "name": "track_name",
+                    "selector": "./td[4]",
+                    "type": "text"
+                },
+                {
+                    "name": "distance",
+                    "selector": "./td[5]",
+                    "type": "text"
+                },
+                {
+                    "name": "track_condition",
+                    "selector": "./td[6]",
+                    "type": "text"
+                },
+                {
+                    "name": "race_class",
+                    "selector": "./td[7]",
+                    "type": "text"
+                },
+                {
+                    "name": "place",
+                    "selector": "./td[8]",
+                    "type": "text"
+                },
+                {
+                    "name": "rating",
+                    "selector": "./td[9]",
+                    "type": "text"
+                },
+                {
+                    "name": "trainer",
+                    "selector": "./td[10]/a",
+                    "type": "text"
+                },
+                {
+                    "name": "jockey",
+                    "selector": "./td[11]/a",
+                    "type": "text"
+                },
+                {
+                    "name": "horse_length",
+                    "selector": "./td[12]",
+                    "type": "text"
+                },
+                {
+                    "name": "win_odds",
+                    "selector": "./td[13]",
+                    "type": "text"
+                },
+                {
+                    "name": "actual_weight",
+                    "selector": "./td[14]",
+                    "type": "text"
+                },
+                {
+                    "name": "running_position",
+                    "selector": "./td[15]",
+                    "type": "text"
+                },
+                {
+                    "name": "finish_time",
+                    "selector": "./td[16]",
+                    "type": "text"
+                },
+                {
+                    "name": "horse_weight",
+                    "selector": "./td[17]",
+                    "type": "text"
+                },
+                {
+                    "name": "gear",
+                    "selector": "./td[18]",
+                    "type": "text"
+                },
+                {
+                    "name": "replay_links",
+                    "selector": "./td[19]/a",
+                    "type": "list",
+                    "fields": [
+                        {
+                            "name": "url",
+                            "selector": ".",
+                            "type": "attribute",
+                            "attribute": "href"
+                        },
+                        {
+                            "name": "type",
+                            "selector": "./img",
+                            "type": "attribute",
+                            "attribute": "alt"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

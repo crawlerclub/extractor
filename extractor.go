@@ -99,6 +99,25 @@ func (e *Extractor) extractField(element *rod.Element, field Field) (interface{}
 			nestedItem[nestedField.Name] = nestedValue
 		}
 		return nestedItem, nil
+	case "list":
+		elements, err := element.ElementsX(field.Selector)
+		if err != nil {
+			return nil, fmt.Errorf("elements not found for selector: %s", field.Selector)
+		}
+
+		var items []map[string]interface{}
+		for _, el := range elements {
+			item := make(map[string]interface{})
+			for _, subField := range field.Fields {
+				value, err := e.extractField(el, subField)
+				if err != nil {
+					continue
+				}
+				item[subField.Name] = value
+			}
+			items = append(items, item)
+		}
+		return items, nil
 	default:
 		return nil, fmt.Errorf("unsupported field type: %s", field.Type)
 	}

@@ -8,6 +8,8 @@ import (
 	"os"
 
 	"extractor"
+
+	"zliu.org/goutil"
 )
 
 var (
@@ -38,7 +40,7 @@ func main() {
 		log.Fatalf("Error extracting data: %v", err)
 	}
 
-	jsonData, err := json.MarshalIndent(items, "", "  ")
+	jsonData, err := goutil.JSONMarshalIndent(items, "", "  ")
 	if err != nil {
 		log.Fatalf("Error converting results to JSON: %v", err)
 	}
