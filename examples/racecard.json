@@ -1,0 +1,23 @@
+{
+    "name": "Race Card Extractor",
+    "baseSelector": "//div[@id='innerContent']",
+    "fields": [
+        {
+            "name": "race_info",
+            "selector": "./div[2]/div[4]/div[2]",
+            "type": "text"
+        },
+        {
+            "name": "race_horses", 
+            "selector": ".//table[@id='racecardlist']//table/tbody/tr",
+            "type": "list",
+            "fields": [
+                {
+                    "name": "horse_no",
+                    "selector": "./td[1]",
+                    "type": "text"
+                }
+            ]
+        }
+    ]
+} 
