@@ -23,6 +23,11 @@
                     "type": "text"
                 },
                 {
+                    "name": "silk",
+                    "selector": "./td[3]",
+                    "type": "text"
+                },
+                {
                     "name": "horse",
                     "selector": "./td[4]",
                     "type": "nested",
@@ -39,6 +44,11 @@
                             "attribute": "href"
                         }
                     ]
+                },
+                {
+                    "name": "brand_no",
+                    "selector": "./td[5]",
+                    "type": "text"
                 },
                 {
                     "name": "weight",
@@ -64,6 +74,11 @@
                     ]
                 },
                 {
+                    "name": "overweight",
+                    "selector": "./td[8]",
+                    "type": "text"
+                },
+                {
                     "name": "draw",
                     "selector": "./td[9]",
                     "type": "text"
@@ -87,6 +102,11 @@
                     ]
                 },
                 {
+                    "name": "international_rating",
+                    "selector": "./td[11]",
+                    "type": "text"
+                },
+                {
                     "name": "rating",
                     "selector": "./td[12]",
                     "type": "text"
@@ -102,13 +122,68 @@
                     "type": "text"
                 },
                 {
+                    "name": "horse_weight_change",
+                    "selector": "./td[15]",
+                    "type": "text"
+                },
+                {
+                    "name": "best_time",
+                    "selector": "./td[16]",
+                    "type": "text"
+                },
+                {
+                    "name": "age",
+                    "selector": "./td[17]",
+                    "type": "text"
+                },
+                {
+                    "name": "weight_for_age",
+                    "selector": "./td[18]",
+                    "type": "text"
+                },
+                {
+                    "name": "sex",
+                    "selector": "./td[19]",
+                    "type": "text"
+                },
+                {
+                    "name": "season_stake",
+                    "selector": "./td[20]",
+                    "type": "text"
+                },
+                {
                     "name": "priority",
                     "selector": "./td[21]",
                     "type": "text"
                 },
                 {
+                    "name": "days_since_last_run",
+                    "selector": "./td[22]",
+                    "type": "text"
+                },
+                {
                     "name": "gear",
                     "selector": "./td[23]",
+                    "type": "text"
+                },
+                {
+                    "name": "owner",
+                    "selector": "./td[24]",
+                    "type": "text"
+                },
+                {
+                    "name": "sire",
+                    "selector": "./td[25]",
+                    "type": "text"
+                },
+                {
+                    "name": "dam",
+                    "selector": "./td[26]",
+                    "type": "text"
+                },
+                {
+                    "name": "import_type",
+                    "selector": "./td[27]",
                     "type": "text"
                 }
             ]
