@@ -16,6 +16,100 @@
                     "name": "horse_no",
                     "selector": "./td[1]",
                     "type": "text"
+                },
+                {
+                    "name": "recent_results",
+                    "selector": "./td[2]",
+                    "type": "text"
+                },
+                {
+                    "name": "horse",
+                    "selector": "./td[4]",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "selector": ".",
+                            "type": "text"
+                        },
+                        {
+                            "name": "link",
+                            "selector": "./a",
+                            "type": "attribute",
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                {
+                    "name": "weight",
+                    "selector": "./td[6]", 
+                    "type": "text"
+                },
+                {
+                    "name": "jockey",
+                    "selector": "./td[7]",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "selector": ".",
+                            "type": "text"
+                        },
+                        {
+                            "name": "link",
+                            "selector": "./a",
+                            "type": "attribute",
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                {
+                    "name": "draw",
+                    "selector": "./td[9]",
+                    "type": "text"
+                },
+                {
+                    "name": "trainer",
+                    "selector": "./td[10]",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "name",
+                            "selector": ".",
+                            "type": "text"
+                        },
+                        {
+                            "name": "link",
+                            "selector": "./a",
+                            "type": "attribute",
+                            "attribute": "href"
+                        }
+                    ]
+                },
+                {
+                    "name": "rating",
+                    "selector": "./td[12]",
+                    "type": "text"
+                },
+                {
+                    "name": "rating_change",
+                    "selector": "./td[13]",
+                    "type": "text"
+                },
+                {
+                    "name": "horse_weight",
+                    "selector": "./td[14]",
+                    "type": "text"
+                },
+                {
+                    "name": "priority",
+                    "selector": "./td[21]",
+                    "type": "text"
+                },
+                {
+                    "name": "gear",
+                    "selector": "./td[23]",
+                    "type": "text"
                 }
             ]
         }
