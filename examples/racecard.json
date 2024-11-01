@@ -187,6 +187,19 @@
                     "type": "text"
                 }
             ]
+        },
+        {
+            "name": "more_race_card",
+            "selector": ".//div[contains(@class,'racingNum')]//tr[1]//a",
+            "type": "list",
+            "fields": [
+                {
+                    "name": "link",
+                    "selector": ".",
+                    "type": "attribute",
+                    "attribute": "href"
+                }
+            ]
         }
     ]
 } 
