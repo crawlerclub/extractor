@@ -9,7 +9,7 @@
             "fields": [
                 {
                     "name": "horse_name",
-                    "selector": ".//td[contains(@class, 'subsubheader')]//span[contains(@class, 'title_text')]",
+                    "selector": ".//span[contains(@class, 'title_text')]",
                     "type": "text"
                 },
                 {
