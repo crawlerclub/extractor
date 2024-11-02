@@ -3,89 +3,96 @@
     "baseSelector": "//body",
     "fields": [
         {
-            "name": "horse_name",
-            "selector": "//table[contains(@class, 'horseProfile')]//td[contains(@class, 'subsubheader')]//span[contains(@class, 'title_text')]",
-            "type": "text"
-        },
-        {
-            "name": "origin_age",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '出生地 / 馬齡')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "color_sex",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '毛色 / 性別')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "import_type",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '進口類別')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "season_prize",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '今季獎金')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "total_prize",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '總獎金')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "race_record",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '冠-亞-季-總出賽次數')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "recent_races",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '最近十個賽馬日')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "current_location",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '現在位置')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "import_date",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '進口日期')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "trainer",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '練馬師')]]/td[last()]/a",
-            "type": "text"
-        },
-        {
-            "name": "owner",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '馬主')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "current_rating",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '現時評分')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "season_start_rating",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '季初評分')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "sire",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '父系')]]/td[last()]/a",
-            "type": "text"
-        },
-        {
-            "name": "dam",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '母系')]]/td[last()]",
-            "type": "text"
-        },
-        {
-            "name": "damsire",
-            "selector": "//table[contains(@class, 'table_eng_text')]//tr[td[contains(text(), '外祖父')]]/td[last()]",
-            "type": "text"
+            "name": "horse_info",
+            "type": "nested",
+            "selector": ".//table[contains(@class, 'horseProfile')]",
+            "fields": [
+                {
+                    "name": "horse_name",
+                    "selector": ".//td[contains(@class, 'subsubheader')]//span[contains(@class, 'title_text')]",
+                    "type": "text"
+                },
+                {
+                    "name": "origin_age",
+                    "selector": ".//tr[td[contains(text(), '出生地 / 馬齡')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "color_sex",
+                    "selector": ".//tr[td[contains(text(), '毛色 / 性別')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "import_type",
+                    "selector": ".//tr[td[contains(text(), '進口類別')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "season_prize",
+                    "selector": ".//tr[td[contains(text(), '今季獎金')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "total_prize",
+                    "selector": ".//tr[td[contains(text(), '總獎金')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "race_record",
+                    "selector": ".//tr[td[contains(text(), '冠-亞-季-總出賽次數')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "recent_races",
+                    "selector": ".//tr[td[contains(text(), '最近十個賽馬日')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "current_location",
+                    "selector": ".//tr[td[contains(text(), '現在位置')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "import_date",
+                    "selector": ".//tr[td[contains(text(), '進口日期')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "trainer",
+                    "selector": ".//tr[td[contains(text(), '練馬師')]]/td[last()]/a",
+                    "type": "text"
+                },
+                {
+                    "name": "owner",
+                    "selector": ".//tr[td[contains(text(), '馬主')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "current_rating",
+                    "selector": ".//tr[td[contains(text(), '現時評分')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "season_start_rating",
+                    "selector": ".//tr[td[contains(text(), '季初評分')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "sire",
+                    "selector": ".//tr[td[contains(text(), '父系')]]/td[last()]/a",
+                    "type": "text"
+                },
+                {
+                    "name": "dam",
+                    "selector": ".//tr[td[contains(text(), '母系')]]/td[last()]",
+                    "type": "text"
+                },
+                {
+                    "name": "damsire",
+                    "selector": ".//tr[td[contains(text(), '外祖父')]]/td[last()]",
+                    "type": "text"
+                }
+            ]
         },
         {
             "name": "race_history",
