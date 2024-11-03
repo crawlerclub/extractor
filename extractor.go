@@ -8,6 +8,7 @@ import (
 )
 
 type Schema struct {
+	ExampleURL   string  `json:"exampleURL"`
 	Name         string  `json:"name"`
 	BaseSelector string  `json:"baseSelector"`
 	Fields       []Field `json:"fields"`
