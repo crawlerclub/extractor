@@ -13,15 +13,15 @@ import (
 )
 
 var (
-	schemaFile = flag.String("schema", "horse.json", "Path to the schema JSON file")
-	url        = flag.String("url", "https://racing.hkjc.com/racing/information/Chinese/Horse/Horse.aspx?HorseId=HK_2021_G372&Option=1", "URL to extract data from")
+	schemaFile = flag.String("schema", "", "Path to the schema JSON file")
+	url        = flag.String("url", "", "URL to extract data from")
 )
 
 func main() {
 	flag.Parse()
 
-	if *schemaFile == "" || *url == "" {
-		log.Fatal("Both schema file and URL are required")
+	if *schemaFile == "" {
+		log.Fatal("schema file is required")
 	}
 
 	schemaData, err := os.ReadFile(*schemaFile)
@@ -32,6 +32,13 @@ func main() {
 	var schema extractor.Schema
 	if err := json.Unmarshal(schemaData, &schema); err != nil {
 		log.Fatalf("Error parsing schema JSON: %v", err)
+	}
+
+	if *url == "" {
+		*url = schema.ExampleURL
+	}
+	if *url == "" {
+		log.Fatal("url is required and must be provided via flag or in the schema")
 	}
 
 	extractor := extractor.NewExtractor(schema)

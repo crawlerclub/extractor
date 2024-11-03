@@ -1,5 +1,6 @@
 {
     "name": "Race Results Extractor",
+    "exampleURL": "https://racing.hkjc.com/racing/information/chinese/Racing/LocalResults.aspx?RaceDate=2024/10/09",
     "baseSelector": "//div[@id='innerContent']",
     "fields": [
         {

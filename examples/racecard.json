@@ -1,5 +1,6 @@
 {
     "name": "Race Card Extractor",
+    "exampleURL": "https://racing.hkjc.com/racing/information/Chinese/racing/RaceCard.aspx",
     "baseSelector": "//div[@id='innerContent']",
     "fields": [
         {
