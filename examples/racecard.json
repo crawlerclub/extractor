@@ -18,7 +18,7 @@
         },
         {
             "name": "race_horses",
-            "entity_type": "horse",
+            "entity_type": "race_horse",
             "selector": "//table[@id='racecardlist']//table/tbody/tr",
             "type": "list",
             "fields": [
