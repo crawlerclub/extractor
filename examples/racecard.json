@@ -38,22 +38,15 @@
                     "type": "text"
                 },
                 {
-                    "name": "horse",
+                    "name": "horse_name",
                     "selector": "./td[4]",
-                    "type": "nested",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "selector": ".",
-                            "type": "text"
-                        },
-                        {
-                            "name": "link",
-                            "selector": "./a",
-                            "type": "attribute",
-                            "attribute": "href"
-                        }
-                    ]
+                    "type": "text"
+                },
+                {
+                    "name": "horse_link",
+                    "selector": "./td[4]/a",
+                    "type": "attribute",
+                    "attribute": "href"
                 },
                 {
                     "name": "brand_no",
@@ -66,22 +59,15 @@
                     "type": "text"
                 },
                 {
-                    "name": "jockey",
+                    "name": "jockey_name",
                     "selector": "./td[7]",
-                    "type": "nested",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "selector": ".",
-                            "type": "text"
-                        },
-                        {
-                            "name": "link",
-                            "selector": "./a",
-                            "type": "attribute",
-                            "attribute": "href"
-                        }
-                    ]
+                    "type": "text"
+                },
+                {
+                    "name": "jockey_link",
+                    "selector": "./td[7]/a",
+                    "type": "attribute",
+                    "attribute": "href"
                 },
                 {
                     "name": "overweight",
@@ -94,22 +80,15 @@
                     "type": "text"
                 },
                 {
-                    "name": "trainer",
+                    "name": "trainer_name",
                     "selector": "./td[10]",
-                    "type": "nested",
-                    "fields": [
-                        {
-                            "name": "name",
-                            "selector": ".",
-                            "type": "text"
-                        },
-                        {
-                            "name": "link",
-                            "selector": "./a",
-                            "type": "attribute",
-                            "attribute": "href"
-                        }
-                    ]
+                    "type": "text"
+                },
+                {
+                    "name": "trainer_link",
+                    "selector": "./td[10]/a",
+                    "type": "attribute",
+                    "attribute": "href"
                 },
                 {
                     "name": "international_rating",
