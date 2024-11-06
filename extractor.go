@@ -168,6 +168,23 @@ func (e *Extractor) extractField(element *rod.Element, field Field) (interface{}
 			return nil, fmt.Errorf("elements not found for selector: %s", field.Selector)
 		}
 
+		// 检查是否只有一个子字段
+		if len(field.Fields) == 1 && field.Fields[0].Type == "text" && field.Fields[0].Selector == "." {
+			// 简化输出为字符串数组
+			var items []string
+			for _, el := range elements {
+				value, err := e.extractField(el, field.Fields[0])
+				if err != nil {
+					continue
+				}
+				if str, ok := value.(string); ok {
+					items = append(items, str)
+				}
+			}
+			return items, nil
+		}
+
+		// 原有的对象数组处理逻辑
 		var items []map[string]interface{}
 		for _, el := range elements {
 			item := make(map[string]interface{})
