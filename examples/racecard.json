@@ -1,14 +1,24 @@
 {
     "name": "Race Card Extractor",
+    "pattern": "racing/information/chinese/racing/RaceCard.aspx",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/racing/RaceCard.aspx",
-    "fields": [
+    "schemas": [
         {
             "name": "race_info",
+            "entity_type": "race_info",
             "selector": "//div[@id='innerContent']/div[2]/div[4]/div[2]",
-            "type": "text"
+            "type": "nested",
+            "fields": [
+                {
+                    "name": "race_meta",
+                    "selector": ".",
+                    "type": "text"
+                }
+            ]
         },
         {
-            "name": "race_horses", 
+            "name": "race_horses",
+            "entity_type": "horse",
             "selector": "//table[@id='racecardlist']//table/tbody/tr",
             "type": "list",
             "fields": [
@@ -52,7 +62,7 @@
                 },
                 {
                     "name": "weight",
-                    "selector": "./td[6]", 
+                    "selector": "./td[6]",
                     "type": "text"
                 },
                 {
@@ -190,6 +200,7 @@
         },
         {
             "name": "more_race_card",
+            "entity_type": "race_link",
             "selector": ".//div[contains(@class,'racingNum')]//tr[1]//a",
             "type": "list",
             "fields": [

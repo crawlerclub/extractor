@@ -1,11 +1,13 @@
 {
-    "name": "Race Results Extractor",
+    "name": "HKJC Race Results Extractor",
+    "pattern": "racing/information/chinese/Racing/LocalResults.aspx",
     "example_url": "https://racing.hkjc.com/racing/information/chinese/Racing/LocalResults.aspx?RaceDate=2024/10/09",
-    "fields": [
+    "schemas": [
         {
             "name": "race_info",
-            "type": "nested",
+            "entity_type": "race",
             "selector": "//div[contains(@class, 'race_tab')]",
+            "type": "nested",
             "fields": [
                 {
                     "name": "race_date_and_venue",
@@ -69,7 +71,8 @@
             ]
         },
         {
-            "name": "results",
+            "name": "race_results",
+            "entity_type": "race_result",
             "selector": "//div[@class='performance']//tbody/tr",
             "type": "list",
             "fields": [
@@ -148,7 +151,7 @@
                 },
                 {
                     "name": "win_odds",
-                    "selector": ".//td[count//div[@class='performance']//thead//td[contains(text(),'獨贏')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'獨贏')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'獨贏')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'獨贏')]]",
                     "type": "text"
                 }
             ]

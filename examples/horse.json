@@ -1,11 +1,13 @@
 {
     "name": "Horse Info Extractor",
+    "pattern": "racing/information/chinese/Horse/Horse.aspx",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/Horse/Horse.aspx?HorseId=HK_2021_G372&Option=1",
-    "fields": [
+    "schemas": [
         {
             "name": "horse_info",
-            "type": "nested",
+            "entity_type": "horse",
             "selector": "//table[contains(@class, 'horseProfile')]",
+            "type": "nested",
             "fields": [
                 {
                     "name": "horse_name",
@@ -96,6 +98,7 @@
         },
         {
             "name": "race_history",
+            "entity_type": "race_result",
             "selector": "//table[contains(@class, 'bigborder')]//tr[position()>1 and td[1]/a]",
             "type": "list",
             "fields": [

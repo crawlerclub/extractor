@@ -7,10 +7,19 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 )
 
+type ExtractorConfig struct {
+	Name       string   `json:"name"`
+	Pattern    string   `json:"pattern"`
+	ExampleURL string   `json:"example_url"`
+	Schemas    []Schema `json:"schemas"`
+}
+
 type Schema struct {
-	ExampleURL string  `json:"example_url"`
 	Name       string  `json:"name"`
-	Fields     []Field `json:"fields"`
+	EntityType string  `json:"entity_type"`
+	Selector   string  `json:"selector"`
+	Type       string  `json:"type"`
+	Fields     []Field `json:"fields,omitempty"`
 }
 
 type Field struct {
@@ -22,15 +31,25 @@ type Field struct {
 }
 
 type Extractor struct {
-	Schema  Schema
+	Config  ExtractorConfig
 	Browser *rod.Browser
 }
 
 type ExtractedItem map[string]interface{}
 
 type ExtractionResult struct {
+	SchemaResults map[string]SchemaResult
+	Errors        []ExtractionError
+}
+
+type SchemaResult struct {
+	Schema SchemaInfo
 	Items  []ExtractedItem
-	Errors []ExtractionError
+}
+
+type SchemaInfo struct {
+	Name       string `json:"name"`
+	EntityType string `json:"entity_type"`
 }
 
 type ExtractionError struct {
@@ -39,16 +58,16 @@ type ExtractionError struct {
 	URL     string
 }
 
-func NewExtractor(schema Schema) *Extractor {
+func NewExtractor(config ExtractorConfig) *Extractor {
 	launcher := rod.New().ControlURL(launcher.New().Set("--no-sandbox").MustLaunch())
 	browser := launcher.MustConnect()
-	return &Extractor{Schema: schema, Browser: browser}
+	return &Extractor{Config: config, Browser: browser}
 }
 
 func (e *Extractor) Extract(url string) (*ExtractionResult, error) {
 	result := &ExtractionResult{
-		Items:  make([]ExtractedItem, 0),
-		Errors: make([]ExtractionError, 0),
+		SchemaResults: make(map[string]SchemaResult),
+		Errors:        make([]ExtractionError, 0),
 	}
 
 	page := e.Browser.MustPage(url)
@@ -56,22 +75,47 @@ func (e *Extractor) Extract(url string) (*ExtractionResult, error) {
 
 	page.MustWaitStable()
 
-	item, errs := e.extractItem(page.MustElement("html"), url)
-	if len(errs) > 0 {
-		result.Errors = append(result.Errors, errs...)
-	}
-	if item != nil {
-		result.Items = append(result.Items, item)
+	// Extract items for each schema
+	for _, schema := range e.Config.Schemas {
+		schemaResult := SchemaResult{
+			Schema: SchemaInfo{
+				Name:       schema.Name,
+				EntityType: schema.EntityType,
+			},
+			Items: make([]ExtractedItem, 0),
+		}
+
+		elements, err := page.ElementsX(schema.Selector)
+		if err != nil {
+			result.Errors = append(result.Errors, ExtractionError{
+				Field:   schema.Name,
+				Message: fmt.Sprintf("failed to find elements with selector: %s", schema.Selector),
+				URL:     url,
+			})
+			continue
+		}
+
+		for _, element := range elements {
+			item, errs := e.extractItemWithSchema(element, url, schema)
+			if len(errs) > 0 {
+				result.Errors = append(result.Errors, errs...)
+			}
+			if item != nil {
+				schemaResult.Items = append(schemaResult.Items, item)
+			}
+		}
+
+		result.SchemaResults[schema.Name] = schemaResult
 	}
 
 	return result, nil
 }
 
-func (e *Extractor) extractItem(element *rod.Element, url string) (ExtractedItem, []ExtractionError) {
+func (e *Extractor) extractItemWithSchema(element *rod.Element, url string, schema Schema) (ExtractedItem, []ExtractionError) {
 	item := make(ExtractedItem)
 	var errors []ExtractionError
 
-	for _, field := range e.Schema.Fields {
+	for _, field := range schema.Fields {
 		value, err := e.extractField(element, field)
 		if err != nil {
 			errors = append(errors, ExtractionError{

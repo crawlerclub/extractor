@@ -13,35 +13,35 @@ import (
 )
 
 var (
-	schemaFile = flag.String("schema", "", "Path to the schema JSON file")
+	configFile = flag.String("config", "", "Path to the config JSON file")
 	url        = flag.String("url", "", "URL to extract data from")
 )
 
 func main() {
 	flag.Parse()
 
-	if *schemaFile == "" {
-		log.Fatal("schema file is required")
+	if *configFile == "" {
+		log.Fatal("config file is required")
 	}
 
-	schemaData, err := os.ReadFile(*schemaFile)
+	configData, err := os.ReadFile(*configFile)
 	if err != nil {
-		log.Fatalf("Error reading schema file: %v", err)
+		log.Fatalf("Error reading config file: %v", err)
 	}
 
-	var schema extractor.Schema
-	if err := json.Unmarshal(schemaData, &schema); err != nil {
-		log.Fatalf("Error parsing schema JSON: %v", err)
+	var config extractor.ExtractorConfig
+	if err := json.Unmarshal(configData, &config); err != nil {
+		log.Fatalf("Error parsing config JSON: %v", err)
 	}
 
 	if *url == "" {
-		*url = schema.ExampleURL
+		*url = config.ExampleURL
 	}
 	if *url == "" {
-		log.Fatal("url is required and must be provided via flag or in the schema")
+		log.Fatal("url is required and must be provided via flag or in the config")
 	}
 
-	extractor := extractor.NewExtractor(schema)
+	extractor := extractor.NewExtractor(config)
 	result, err := extractor.Extract(*url)
 	if err != nil {
 		log.Fatalf("Error extracting data: %v", err)
@@ -54,7 +54,7 @@ func main() {
 		}
 	}
 
-	jsonData, err := goutil.JSONMarshalIndent(result.Items, "", "  ")
+	jsonData, err := goutil.JSONMarshalIndent(result.SchemaResults, "", "  ")
 	if err != nil {
 		log.Fatalf("Error converting results to JSON: %v", err)
 	}
