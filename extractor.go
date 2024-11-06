@@ -8,10 +8,9 @@ import (
 )
 
 type Schema struct {
-	ExampleURL   string  `json:"exampleURL"`
-	Name         string  `json:"name"`
-	BaseSelector string  `json:"baseSelector"`
-	Fields       []Field `json:"fields"`
+	ExampleURL string  `json:"example_url"`
+	Name       string  `json:"name"`
+	Fields     []Field `json:"fields"`
 }
 
 type Field struct {
@@ -57,19 +56,12 @@ func (e *Extractor) Extract(url string) (*ExtractionResult, error) {
 
 	page.MustWaitStable()
 
-	elements, err := page.ElementsX(e.Schema.BaseSelector)
-	if err != nil {
-		return nil, fmt.Errorf("failed to find elements with base selector: %v", err)
+	item, errs := e.extractItem(page.MustElement("html"), url)
+	if len(errs) > 0 {
+		result.Errors = append(result.Errors, errs...)
 	}
-
-	for _, element := range elements {
-		item, errs := e.extractItem(element, url)
-		if len(errs) > 0 {
-			result.Errors = append(result.Errors, errs...)
-		}
-		if item != nil {
-			result.Items = append(result.Items, item)
-		}
+	if item != nil {
+		result.Items = append(result.Items, item)
 	}
 
 	return result, nil
