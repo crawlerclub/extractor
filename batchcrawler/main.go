@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	configFile  = flag.String("config", "", "Path to the config JSON file")
-	urlFile     = flag.String("urls", "", "File containing URLs to process, one per line")
-	concurrency = flag.Int("concurrency", 100, "Number of concurrent workers")
-	outputFile  = flag.String("output", "output.json", "Path to output JSON file")
+	configFile = flag.String("config", "", "Path to the config JSON file")
+	urlFile    = flag.String("urls", "", "File containing URLs to process, one per line")
+	workers    = flag.Int("workers", 2, "Number of concurrent workers")
+	outputFile = flag.String("output", "output.json", "Path to output JSON file")
 )
 
 type Result struct {
@@ -45,9 +45,9 @@ func main() {
 	results := make(chan Result)
 	var wg sync.WaitGroup
 
-	urlChan := make(chan string, *concurrency)
+	urlChan := make(chan string, *workers)
 
-	for i := 0; i < *concurrency; i++ {
+	for i := 0; i < *workers; i++ {
 		wg.Add(1)
 		go worker(config, urlChan, results, &wg)
 	}
