@@ -2,9 +2,16 @@ package extractor
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
+)
+
+const (
+	FromURL     string = "url"
+	FromElement string = "element"
 )
 
 type ExtractorConfig struct {
@@ -24,7 +31,9 @@ type Schema struct {
 
 type Field struct {
 	Name      string  `json:"name"`
+	From      string  `json:"from"`
 	Selector  string  `json:"selector"`
+	Pattern   string  `json:"pattern"`
 	Type      string  `json:"type"`
 	Attribute string  `json:"attribute,omitempty"`
 	Fields    []Field `json:"fields,omitempty"`
@@ -132,6 +141,91 @@ func (e *Extractor) extractItemWithSchema(element *rod.Element, url string, sche
 }
 
 func (e *Extractor) extractField(element *rod.Element, field Field) (interface{}, error) {
+	if strings.HasPrefix(field.Name, "_id") {
+		// extract nested id
+		if field.Type == "nested" {
+			nestedElement, err := element.ElementX(".")
+			if err != nil {
+				return nil, fmt.Errorf("nested element not found for selector: %s", field.Selector)
+			}
+			nestedItem := make(ExtractedItem)
+			for _, nestedField := range field.Fields {
+				nestedValue, err := e.extractField(nestedElement, nestedField)
+				if err != nil {
+					continue
+				}
+				nestedItem[nestedField.Name] = nestedValue
+			}
+			if len(nestedItem) > 0 {
+				return nestedItem, nil
+			}
+		}
+
+		// if nested id not found, extract id from url or element
+		var id string
+		switch field.From {
+		case FromURL:
+			url := element.Page().MustInfo().URL
+			matches := regexp.MustCompile(field.Pattern).FindStringSubmatch(url)
+			if len(matches) > 1 {
+				id = strings.Join(matches[1:], "/")
+			} else {
+				return nil, fmt.Errorf("failed to extract id from URL using pattern: %s", field.Pattern)
+			}
+		case FromElement:
+			el, err := element.ElementX(field.Selector)
+			if err != nil {
+				return nil, fmt.Errorf("element not found for selector: %s", field.Selector)
+			}
+			text, err := el.Text()
+			if err != nil {
+				return nil, fmt.Errorf("failed to get text from element: %s", field.Selector)
+			}
+			matches := regexp.MustCompile(field.Pattern).FindStringSubmatch(text)
+			if len(matches) > 1 {
+				id = strings.Join(matches[1:], "/")
+			} else {
+				return nil, fmt.Errorf("failed to extract id from element using pattern: %s", field.Pattern)
+			}
+		default:
+			return nil, fmt.Errorf("unsupported from: %s", field.From)
+		}
+		return id, nil
+	}
+
+	if strings.HasPrefix(field.Name, "_time") {
+		// extract time from url or element
+		var time string
+		switch field.From {
+		case FromURL:
+			url := element.Page().MustInfo().URL
+			matches := regexp.MustCompile(field.Pattern).FindStringSubmatch(url)
+			if len(matches) > 1 {
+				time = strings.Join(matches[1:], "/")
+			} else {
+				return nil, fmt.Errorf("failed to extract time from URL using pattern: %s", field.Pattern)
+			}
+		case FromElement:
+			el, err := element.ElementX(field.Selector)
+			if err != nil {
+				return nil, fmt.Errorf("element not found for selector: %s", field.Selector)
+			}
+			text, err := el.Text()
+			if err != nil {
+				return nil, fmt.Errorf("failed to get text from element: %s", field.Selector)
+			}
+			matches := regexp.MustCompile(field.Pattern).FindStringSubmatch(text)
+			if len(matches) > 1 {
+				time = strings.Join(matches[1:], "/")
+			} else {
+				return nil, fmt.Errorf("failed to extract time from element using pattern: %s", field.Pattern)
+			}
+		default:
+			return nil, fmt.Errorf("unsupported from: %s", field.From)
+		}
+		return time, nil
+	}
+
 	switch field.Type {
 	case "text":
 		el, err := element.ElementX(field.Selector)

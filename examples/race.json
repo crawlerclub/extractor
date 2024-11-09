@@ -1,14 +1,36 @@
 {
     "name": "HKJC Race Results Extractor",
-    "pattern": "racing/information/chinese/Racing/LocalResults.aspx",
+    "pattern": "(?i)racing/information/chinese/Racing/LocalResults.aspx\\?RaceDate=[^&]+",
     "example_url": "https://racing.hkjc.com/racing/information/chinese/Racing/LocalResults.aspx?RaceDate=2024/10/09",
     "schemas": [
         {
             "name": "race_info",
-            "entity_type": "race",
+            "entity_type": "race_info",
             "selector": "//div[contains(@class, 'race_tab')]",
             "type": "nested",
             "fields": [
+                {
+                    "name": "_id",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "_id_1",
+                            "from": "url",
+                            "pattern": "(?i)RaceDate=([^&]+)"
+                        },
+                        {
+                            "name": "_id_2",
+                            "from": "element",
+                            "selector": "//td[contains(text(), '第') and contains(text(), '場')]",
+                            "pattern": "(?i)第 (\\d+) 場"
+                        }
+                    ]
+                },
+                {
+                    "name": "_time",
+                    "from": "url",
+                    "pattern": "(?i)RaceDate=([^&]+)"
+                },
                 {
                     "name": "race_date_and_venue",
                     "selector": "//span[contains(@class, 'f_fs13')]/text()",
@@ -76,6 +98,34 @@
             "selector": "//div[@class='performance']//tbody/tr",
             "type": "list",
             "fields": [
+                {
+                    "name": "_id",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "_id_1",
+                            "from": "url",
+                            "pattern": "(?i)RaceDate=([^&]+)"
+                        },
+                        {
+                            "name": "_id_2",
+                            "from": "element",
+                            "selector": "//td[contains(text(), '第') and contains(text(), '場')]",
+                            "pattern": "(?i)第 (\\d+) 場"
+                        },
+                        {
+                            "name": "_id_3",
+                            "from": "element",
+                            "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'馬名')]]/a/@href",
+                            "pattern": "(?i)HorseId=([^&]+)"
+                        }
+                    ]
+                },
+                {
+                    "name": "_time",
+                    "from": "url",
+                    "pattern": "(?i)RaceDate=([^&]+)"
+                },
                 {
                     "name": "place",
                     "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'名次')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'名次')]]",

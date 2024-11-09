@@ -1,6 +1,6 @@
 {
     "name": "Horse Info Extractor",
-    "pattern": "racing/information/chinese/Horse/Horse.aspx",
+    "pattern": "(?i)racing/information/Chinese/Horse/Horse.aspx\\?HorseId=[^&]+&Option=1",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/Horse/Horse.aspx?HorseId=HK_2021_G372&Option=1",
     "schemas": [
         {
@@ -9,6 +9,11 @@
             "selector": "//table[contains(@class, 'horseProfile')]",
             "type": "nested",
             "fields": [
+                {
+                    "name": "_id",
+                    "from": "url",
+                    "pattern": "(?i)HorseId=([^&]+)"
+                },
                 {
                     "name": "horse_name",
                     "selector": ".//span[contains(@class, 'title_text')]",
@@ -103,22 +108,44 @@
             "type": "list",
             "fields": [
                 {
-                    "name": "race_id",
-                    "selector": "./td[1]/a",
+                    "name": "_id",
                     "type": "nested",
                     "fields": [
                         {
-                            "name": "text",
-                            "selector": ".",
-                            "type": "text"
+                            "name": "_id_1",
+                            "from": "element",
+                            "selector": "./td[1]/a/@href",
+                            "pattern": "(?i)RaceDate=([^&]+)"
                         },
                         {
-                            "name": "link",
-                            "selector": ".",
-                            "type": "attribute",
-                            "attribute": "href"
+                            "name": "_id_2",
+                            "from": "element",
+                            "selector": "./td[1]/a/@href",
+                            "pattern": "(?i)RaceNo=(\\d+)"
+                        },
+                        {
+                            "name": "_id_3",
+                            "from": "url",
+                            "pattern": "(?i)HorseId=([^&]+)"
                         }
                     ]
+                },
+                {
+                    "name": "_time",
+                    "from": "element",
+                    "selector": "./td[1]/a/@href",
+                    "pattern": "(?i)RaceDate=([^&]+)"
+                },
+                {
+                    "name": "race_id",
+                    "selector": "./td[1]",
+                    "type": "text"
+                },
+                {
+                    "name": "race_id_link", 
+                    "selector": "./td[1]/a",
+                    "type": "attribute",
+                    "attribute": "href"
                 },
                 {
                     "name": "race_index",

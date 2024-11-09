@@ -1,6 +1,6 @@
 {
     "name": "Race Card Extractor",
-    "pattern": "racing/information/chinese/racing/RaceCard.aspx",
+    "pattern": "(?i)racing/information/Chinese/racing/RaceCard.aspx$",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/racing/RaceCard.aspx",
     "schemas": [
         {
@@ -9,6 +9,24 @@
             "selector": "//div[@id='innerContent']/div[2]/div[4]/div[2]",
             "type": "nested",
             "fields": [
+                {
+                    "name": "_id",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "_id_1",
+                            "from": "element",
+                            "selector": ".",
+                            "pattern": "(?i)(\\d+)年(\\d+)月(\\d+)日"
+                        },
+                        {
+                            "name": "_id_2",
+                            "from": "element",
+                            "selector": ".",
+                            "pattern": "(?i)第 (\\d+) 場"
+                        }
+                    ]
+                },
                 {
                     "name": "race_meta",
                     "selector": ".",
@@ -22,6 +40,30 @@
             "selector": "//table[@id='racecardlist']//table/tbody/tr",
             "type": "list",
             "fields": [
+                {
+                    "name": "_id",
+                    "type": "nested",
+                    "fields": [
+                        {
+                            "name": "_id_1",
+                            "from": "element",
+                            "selector": "//div[@id='innerContent']/div[2]/div[4]/div[2]",
+                            "pattern": "(?i)(\\d+)年(\\d+)月(\\d+)日"
+                        },
+                        {
+                            "name": "_id_2",
+                            "from": "element",
+                            "selector": "//div[@id='innerContent']/div[2]/div[4]/div[2]",
+                            "pattern": "(?i)第 (\\d+) 場"
+                        },
+                        {
+                            "name": "_id_3",
+                            "from": "element",
+                            "selector": "./td[4]/a/@href",
+                            "pattern": "(?i)HorseId=([^&]+)"
+                        }
+                    ]
+                },
                 {
                     "name": "horse_no",
                     "selector": "./td[1]",
