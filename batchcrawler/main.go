@@ -52,9 +52,8 @@ func main() {
 		go worker(config, urlChan, results, &wg)
 	}
 
-	resultList := make([]Result, 0, len(urls))
 	done := make(chan bool)
-	go collectResults(results, &resultList, done)
+	go collectResults(results, done)
 
 	for _, url := range urls {
 		urlChan <- url
@@ -65,7 +64,7 @@ func main() {
 	close(results)
 	<-done
 
-	log.Printf("Processing completed. Processed %d URLs. Results saved to %s", len(resultList), *outputFile)
+	log.Printf("Processing completed. Results saved to %s", *outputFile)
 }
 
 func loadConfig(path string) (extractor.ExtractorConfig, error) {
@@ -125,7 +124,7 @@ func worker(config extractor.ExtractorConfig, urls <-chan string, results chan<-
 	}
 }
 
-func collectResults(results <-chan Result, resultList *[]Result, done chan<- bool) {
+func collectResults(results <-chan Result, done chan<- bool) {
 	file, err := os.OpenFile(*outputFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		log.Fatalf("Error opening output file: %v", err)
@@ -133,15 +132,16 @@ func collectResults(results <-chan Result, resultList *[]Result, done chan<- boo
 	defer file.Close()
 
 	encoder := json.NewEncoder(file)
+	encoder.SetEscapeHTML(false)
 
+	count := 0
 	for result := range results {
-		*resultList = append(*resultList, result)
-
 		if err := encoder.Encode(result); err != nil {
 			log.Printf("Error saving result for URL %s: %v", result.URL, err)
 		}
 
-		log.Printf("Processed and saved result for URL: %s (Total: %d)", result.URL, len(*resultList))
+		count++
+		log.Printf("Processed and saved result for URL: %s (Total: %d)", result.URL, count)
 	}
 	done <- true
 }
