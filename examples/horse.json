@@ -21,7 +21,7 @@
                 },
                 {
                     "name": "origin_age",
-                    "selector": ".//tr[td[contains(text(), '出生地 / 馬齡')]]/td[last()]",
+                    "selector": ".//tr[td[contains(text(), '出生地')]]/td[last()]",
                     "type": "text"
                 },
                 {
@@ -85,8 +85,13 @@
                     "type": "text"
                 },
                 {
+                    "name": "last_rating",
+                    "selector": ".//tr[td[contains(text(), '最後評分')]]/td[last()]",
+                    "type": "text"
+                },
+                {
                     "name": "sire",
-                    "selector": ".//tr[td[contains(text(), '父系')]]/td[last()]/a",
+                    "selector": ".//tr[td[contains(text(), '父系')]]/td[last()]",
                     "type": "text"
                 },
                 {
@@ -189,12 +194,12 @@
                 },
                 {
                     "name": "trainer",
-                    "selector": "./td[10]/a",
+                    "selector": "./td[10]",
                     "type": "text"
                 },
                 {
                     "name": "jockey",
-                    "selector": "./td[11]/a",
+                    "selector": "./td[11]",
                     "type": "text"
                 },
                 {
