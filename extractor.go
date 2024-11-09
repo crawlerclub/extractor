@@ -3,7 +3,9 @@ package extractor
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
+	"time"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -110,6 +112,21 @@ func (e *Extractor) Extract(url string) (*ExtractionResult, error) {
 				result.Errors = append(result.Errors, errs...)
 			}
 			if item != nil {
+				// extract external_id
+				externalID, ok := extractExternalID(item)
+				if !ok {
+					continue
+				}
+				item["external_id"] = strings.ToUpper(externalID)
+				delete(item, "_id")
+
+				// extract external_time
+				if externalTime, ok := extractExternalTime(item); ok {
+					item["external_time"] = externalTime
+					delete(item, "_time")
+				} else {
+					item["external_time"] = time.Now()
+				}
 				schemaResult.Items = append(schemaResult.Items, item)
 			}
 		}
@@ -295,4 +312,64 @@ func (e *Extractor) extractField(element *rod.Element, field Field) (interface{}
 	default:
 		return nil, fmt.Errorf("unsupported field type: %s", field.Type)
 	}
+}
+
+func extractExternalID(item map[string]interface{}) (string, bool) {
+	idItem, ok := item["_id"]
+	if !ok {
+		return "", false
+	}
+
+	switch idValue := idItem.(type) {
+	case string:
+		return idValue, true
+
+	case ExtractedItem:
+		type idField struct {
+			FieldK string
+			FieldV string
+		}
+		idFields := []idField{}
+		for idk, idv := range idValue {
+			if !strings.HasPrefix(idk, "_id") {
+				continue
+			}
+			if fieldV, ok := idv.(string); ok {
+				idFields = append(idFields, idField{
+					FieldK: idk,
+					FieldV: fieldV,
+				})
+			}
+		}
+		sort.Slice(idFields, func(i, j int) bool {
+			return idFields[i].FieldK < idFields[j].FieldK
+		})
+		idParts := []string{}
+		for _, idField := range idFields {
+			idParts = append(idParts, idField.FieldV)
+		}
+		return strings.Join(idParts, "_"), true
+	}
+
+	return "", false
+}
+
+func extractExternalTime(item map[string]interface{}) (time.Time, bool) {
+	timeItem, ok := item["_time"]
+	if !ok {
+		return time.Time{}, false
+	}
+
+	switch timeValue := timeItem.(type) {
+	case string:
+		loc, err := time.LoadLocation("Asia/Hong_Kong")
+		if err != nil {
+			return time.Time{}, false
+		}
+		if t, err := time.ParseInLocation("2006/01/02", timeValue, loc); err == nil {
+			return t, true
+		}
+	}
+
+	return time.Time{}, false
 }
