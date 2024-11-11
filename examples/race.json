@@ -116,7 +116,7 @@
                         {
                             "name": "_id_3",
                             "from": "element",
-                            "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'馬名')]]/a/@href",
+                            "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'馬名')]]/a/@href",
                             "pattern": "(?i)HorseId=([^&]+)"
                         }
                     ]
