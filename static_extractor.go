@@ -148,9 +148,43 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		return htmlquery.Find(contextNode, selector), nil
 	}
 
-	if strings.HasPrefix(field.Name, "_id") {
-		// extract nested id
+	// Helper function to process count expressions in selector
+	processCountExpression := func(selector string) (string, error) {
+		for strings.Contains(selector, "count(") {
+			start := strings.Index(selector, "count(")
+			if start == -1 {
+				break
+			}
+
+			bracketCount := 1
+			end := start + 6
+			for end < len(selector) && bracketCount > 0 {
+				if selector[end] == '(' {
+					bracketCount++
+				} else if selector[end] == ')' {
+					bracketCount--
+				}
+				end++
+			}
+
+			if bracketCount != 0 {
+				return "", fmt.Errorf("unmatched brackets in count expression")
+			}
+
+			countXPath := selector[start+6 : end-1]
+			count, err := e.evaluateCount(countXPath, element, doc)
+			if err != nil {
+				return "", err
+			}
+
+			selector = selector[:start] + fmt.Sprintf("%d", count) + selector[end:]
+		}
+		return selector, nil
+	}
+
+	if strings.HasPrefix(field.Name, "_id") || strings.HasPrefix(field.Name, "_time") {
 		if field.Type == "nested" {
+			// Nested ID handling remains unchanged
 			nestedElement := element
 			nestedItem := make(ExtractedItem)
 			for _, nestedField := range field.Fields {
@@ -165,39 +199,22 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 			}
 		}
 
-		// if nested id not found, extract id from url or element
 		switch field.From {
 		case FromURL:
 			matches := regexp.MustCompile(field.Pattern).FindStringSubmatch(url)
 			if len(matches) > 1 {
 				return strings.Join(matches[1:], "/"), nil
 			}
-			return nil, fmt.Errorf("failed to extract id from URL using pattern: %s", field.Pattern)
+			return nil, fmt.Errorf("failed to extract from URL using pattern: %s", field.Pattern)
 		case FromElement:
-			el, _ := queryElement(field.Selector, element)
-			if el == nil {
-				return nil, fmt.Errorf("element not found for selector: %s", field.Selector)
+			if strings.Contains(field.Selector, "count(") {
+				processedSelector, err := processCountExpression(field.Selector)
+				if err != nil {
+					return nil, err
+				}
+				field.Selector = processedSelector
 			}
-			text := htmlquery.InnerText(el)
-			matches := regexp.MustCompile(field.Pattern).FindStringSubmatch(text)
-			if len(matches) > 1 {
-				return strings.Join(matches[1:], "/"), nil
-			}
-			return nil, fmt.Errorf("failed to extract id from element using pattern: %s", field.Pattern)
-		default:
-			return nil, fmt.Errorf("unsupported from: %s", field.From)
-		}
-	}
 
-	if strings.HasPrefix(field.Name, "_time") {
-		switch field.From {
-		case FromURL:
-			matches := regexp.MustCompile(field.Pattern).FindStringSubmatch(url)
-			if len(matches) > 1 {
-				return strings.Join(matches[1:], "/"), nil
-			}
-			return nil, fmt.Errorf("failed to extract time from URL using pattern: %s", field.Pattern)
-		case FromElement:
 			el, _ := queryElement(field.Selector, element)
 			if el == nil {
 				return nil, fmt.Errorf("element not found for selector: %s", field.Selector)
@@ -207,7 +224,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 			if len(matches) > 1 {
 				return strings.Join(matches[1:], "/"), nil
 			}
-			return nil, fmt.Errorf("failed to extract time from element using pattern: %s", field.Pattern)
+			return nil, fmt.Errorf("failed to extract from element using pattern: %s", field.Pattern)
 		default:
 			return nil, fmt.Errorf("unsupported from: %s", field.From)
 		}
@@ -216,48 +233,13 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 	switch field.Type {
 	case "text":
 		if strings.Contains(field.Selector, "count(") {
-			// 使用更可靠的方式来提取 count 表达式
-			selector := field.Selector
-			for strings.Contains(selector, "count(") {
-				start := strings.Index(selector, "count(")
-				if start == -1 {
-					break
-				}
-
-				// 找到匹配的右括号
-				bracketCount := 1
-				end := start + 6 // "count(" 的长度
-				for end < len(selector) && bracketCount > 0 {
-					if selector[end] == '(' {
-						bracketCount++
-					} else if selector[end] == ')' {
-						bracketCount--
-					}
-					end++
-				}
-
-				if bracketCount != 0 {
-					return "", fmt.Errorf("unmatched brackets in count expression")
-				}
-
-				countXPath := selector[start+6 : end-1] // 去掉 count( 和最后的 )
-				count, err := e.evaluateCount(countXPath, element, doc)
-				if err != nil {
-					return "", err
-				}
-
-				// 替换整个 count 表达式
-				selector = selector[:start] + fmt.Sprintf("%d", count) + selector[end:]
+			processedSelector, err := processCountExpression(field.Selector)
+			if err != nil {
+				return "", err
 			}
-
-			el, _ := queryElement(selector, element)
-			if el == nil {
-				return "", fmt.Errorf("element not found for selector: %s", selector)
-			}
-			return strings.TrimSpace(htmlquery.InnerText(el)), nil
+			field.Selector = processedSelector
 		}
 
-		// 常规文本提取
 		el, _ := queryElement(field.Selector, element)
 		if el == nil {
 			return "", fmt.Errorf("element not found for selector: %s", field.Selector)
@@ -336,9 +318,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 	}
 }
 
-// 辅助函数：检查 XPath 表达式的基本有效性
 func isValidXPath(xpath string) bool {
-	// 检查括号是否匹配
 	bracketCount := 0
 	for _, c := range xpath {
 		if c == '(' {
