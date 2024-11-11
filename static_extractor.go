@@ -133,6 +133,21 @@ func (e *StaticExtractor) evaluateCount(countXPath string, element *html.Node, d
 }
 
 func (e *StaticExtractor) extractField(element *html.Node, field Field, url string, doc *html.Node) (interface{}, error) {
+	// Helper function to handle XPath queries
+	queryElement := func(selector string, contextNode *html.Node) (*html.Node, error) {
+		if strings.HasPrefix(selector, "//") {
+			return htmlquery.FindOne(doc, selector), nil
+		}
+		return htmlquery.FindOne(contextNode, selector), nil
+	}
+
+	queryElements := func(selector string, contextNode *html.Node) ([]*html.Node, error) {
+		if strings.HasPrefix(selector, "//") {
+			return htmlquery.Find(doc, selector), nil
+		}
+		return htmlquery.Find(contextNode, selector), nil
+	}
+
 	if strings.HasPrefix(field.Name, "_id") {
 		// extract nested id
 		if field.Type == "nested" {
@@ -159,7 +174,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 			}
 			return nil, fmt.Errorf("failed to extract id from URL using pattern: %s", field.Pattern)
 		case FromElement:
-			el := htmlquery.FindOne(element, field.Selector)
+			el, _ := queryElement(field.Selector, element)
 			if el == nil {
 				return nil, fmt.Errorf("element not found for selector: %s", field.Selector)
 			}
@@ -183,7 +198,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 			}
 			return nil, fmt.Errorf("failed to extract time from URL using pattern: %s", field.Pattern)
 		case FromElement:
-			el := htmlquery.FindOne(element, field.Selector)
+			el, _ := queryElement(field.Selector, element)
 			if el == nil {
 				return nil, fmt.Errorf("element not found for selector: %s", field.Selector)
 			}
@@ -235,7 +250,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 				selector = selector[:start] + fmt.Sprintf("%d", count) + selector[end:]
 			}
 
-			el := htmlquery.FindOne(element, selector)
+			el, _ := queryElement(selector, element)
 			if el == nil {
 				return "", fmt.Errorf("element not found for selector: %s", selector)
 			}
@@ -243,14 +258,14 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		}
 
 		// 常规文本提取
-		el := htmlquery.FindOne(element, field.Selector)
+		el, _ := queryElement(field.Selector, element)
 		if el == nil {
 			return "", fmt.Errorf("element not found for selector: %s", field.Selector)
 		}
 		return strings.TrimSpace(htmlquery.InnerText(el)), nil
 
 	case "attribute":
-		el := htmlquery.FindOne(element, field.Selector)
+		el, _ := queryElement(field.Selector, element)
 		if el == nil {
 			return "", fmt.Errorf("element not found for selector: %s", field.Selector)
 		}
@@ -262,7 +277,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		return "", fmt.Errorf("attribute %s not found", field.Attribute)
 
 	case "nested":
-		nestedElement := htmlquery.FindOne(element, field.Selector)
+		nestedElement, _ := queryElement(field.Selector, element)
 		if nestedElement == nil {
 			return nil, fmt.Errorf("nested element not found for selector: %s", field.Selector)
 		}
@@ -280,7 +295,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		return nil, fmt.Errorf("all nested fields failed to extract")
 
 	case "list":
-		elements := htmlquery.Find(element, field.Selector)
+		elements, _ := queryElements(field.Selector, element)
 		if len(elements) == 0 {
 			return nil, fmt.Errorf("elements not found for selector: %s", field.Selector)
 		}
