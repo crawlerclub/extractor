@@ -6,7 +6,7 @@
         {
             "name": "race_info",
             "entity_type": "race_info",
-            "selector": "//div[contains(@class, 'race_tab')]",
+            "selector": "//div[@id='innerContent']",
             "type": "nested",
             "fields": [
                 {
@@ -33,7 +33,7 @@
                 },
                 {
                     "name": "race_date_and_venue",
-                    "selector": "//span[contains(@class, 'f_fs13')]/text()",
+                    "selector": "//span[contains(@class, 'f_fs13')]",
                     "type": "text"
                 },
                 {
@@ -63,7 +63,7 @@
                 },
                 {
                     "name": "race_times",
-                    "selector": ".//td[text()='時間 :']/following-sibling::td",
+                    "selector": ".//td[contains(., '時間 :') and not(contains(., '分段'))]/following-sibling::td",
                     "type": "list",
                     "fields": [
                         {
@@ -75,7 +75,7 @@
                 },
                 {
                     "name": "section_times",
-                    "selector": ".//td[text()='分段時間 :']/following-sibling::td",
+                    "selector": ".//td[contains(., '分段時間 :')]/following-sibling::td",
                     "type": "list",
                     "fields": [
                         {
@@ -128,80 +128,80 @@
                 },
                 {
                     "name": "place",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'名次')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'名次')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'名次')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'名次')]]",
                     "type": "text"
                 },
                 {
                     "name": "horse_no",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'馬號')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'馬號')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'馬號')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'馬號')]]",
                     "type": "text"
                 },
                 {
                     "name": "horse_name",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'馬名')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'馬名')]]",
                     "type": "text"
                 },
                 {
                     "name": "horse_link",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'馬名')]]/a",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'馬名')]]/a",
                     "type": "attribute",
                     "attribute": "href"
                 },
                 {
                     "name": "jockey_name",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'騎師')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'騎師')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'騎師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'騎師')]]",
                     "type": "text"
                 },
                 {
                     "name": "jockey_link",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'騎師')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'騎師')]]/a",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'騎師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'騎師')]]/a",
                     "type": "attribute",
                     "attribute": "href"
                 },
                 {
                     "name": "trainer_name",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'練馬師')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'練馬師')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'練馬師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'練馬師')]]",
                     "type": "text"
                 },
                 {
                     "name": "trainer_link",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'練馬師')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'練馬師')]]/a",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'練馬師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'練馬師')]]/a",
                     "type": "attribute",
                     "attribute": "href"
                 },
                 {
                     "name": "actual_weight",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'實際')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'實際')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'實際')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'實際')]]",
                     "type": "text"
                 },
                 {
                     "name": "horse_weight",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'排位')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'排位')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'排位')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'排位')]]",
                     "type": "text"
                 },
                 {
                     "name": "draw",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'檔位')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'檔位')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'檔位')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'檔位')]]",
                     "type": "text"
                 },
                 {
                     "name": "length_behind",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'頭馬')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'頭馬')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'頭馬')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'頭馬')]]",
                     "type": "text"
                 },
                 {
                     "name": "running_position",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'沿途')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'沿途')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'沿途')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'沿途')]]",
                     "type": "text"
                 },
                 {
                     "name": "finish_time",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'完成')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'完成')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'完成')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'完成')]]",
                     "type": "text"
                 },
                 {
                     "name": "win_odds",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(text(),'獨贏')]/preceding-sibling::td)+1][ancestor::table//td[contains(text(),'獨贏')]]",
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'獨贏')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'獨贏')]]",
                     "type": "text"
                 }
             ]
