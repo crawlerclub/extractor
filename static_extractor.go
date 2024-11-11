@@ -244,7 +244,18 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		if el == nil {
 			return "", fmt.Errorf("element not found for selector: %s", field.Selector)
 		}
-		return strings.TrimSpace(htmlquery.InnerText(el)), nil
+
+		text := htmlquery.InnerText(el)
+		text = regexp.MustCompile(`[ \t]+`).ReplaceAllString(text, " ")
+		lines := strings.Split(text, "\n")
+		var nonEmptyLines []string
+		for _, line := range lines {
+			trimmed := strings.TrimSpace(line)
+			if trimmed != "" {
+				nonEmptyLines = append(nonEmptyLines, trimmed)
+			}
+		}
+		return strings.Join(nonEmptyLines, "\n"), nil
 
 	case "attribute":
 		el, _ := queryElement(field.Selector, element)
