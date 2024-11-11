@@ -69,7 +69,7 @@ func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 		}
 
 		for _, element := range elements {
-			item, errs := e.extractItemWithSchema(element, schema, url)
+			item, errs := e.extractItemWithSchema(element, schema, url, doc)
 			if len(errs) > 0 {
 				result.Errors = append(result.Errors, errs...)
 			}
@@ -99,12 +99,12 @@ func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 	return result, nil
 }
 
-func (e *StaticExtractor) extractItemWithSchema(element *html.Node, schema Schema, url string) (ExtractedItem, []ExtractionError) {
+func (e *StaticExtractor) extractItemWithSchema(element *html.Node, schema Schema, url string, doc *html.Node) (ExtractedItem, []ExtractionError) {
 	item := make(ExtractedItem)
 	var errors []ExtractionError
 
 	for _, field := range schema.Fields {
-		value, err := e.extractField(element, field, url)
+		value, err := e.extractField(element, field, url, doc)
 		if err != nil {
 			errors = append(errors, ExtractionError{
 				Field:   field.Name,
@@ -118,14 +118,28 @@ func (e *StaticExtractor) extractItemWithSchema(element *html.Node, schema Schem
 	return item, errors
 }
 
-func (e *StaticExtractor) extractField(element *html.Node, field Field, url string) (interface{}, error) {
+func (e *StaticExtractor) evaluateCount(countXPath string, element *html.Node, doc *html.Node) (int, error) {
+	if !isValidXPath(countXPath) {
+		return 0, fmt.Errorf("invalid XPath expression: %s", countXPath)
+	}
+
+	if strings.HasPrefix(countXPath, "//") {
+		nodes := htmlquery.Find(doc, countXPath)
+		return len(nodes), nil
+	} else {
+		nodes := htmlquery.Find(element, countXPath)
+		return len(nodes), nil
+	}
+}
+
+func (e *StaticExtractor) extractField(element *html.Node, field Field, url string, doc *html.Node) (interface{}, error) {
 	if strings.HasPrefix(field.Name, "_id") {
 		// extract nested id
 		if field.Type == "nested" {
 			nestedElement := element
 			nestedItem := make(ExtractedItem)
 			for _, nestedField := range field.Fields {
-				nestedValue, err := e.extractField(nestedElement, nestedField, url)
+				nestedValue, err := e.extractField(nestedElement, nestedField, url, doc)
 				if err != nil {
 					continue
 				}
@@ -186,6 +200,49 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 
 	switch field.Type {
 	case "text":
+		if strings.Contains(field.Selector, "count(") {
+			// 使用更可靠的方式来提取 count 表达式
+			selector := field.Selector
+			for strings.Contains(selector, "count(") {
+				start := strings.Index(selector, "count(")
+				if start == -1 {
+					break
+				}
+
+				// 找到匹配的右括号
+				bracketCount := 1
+				end := start + 6 // "count(" 的长度
+				for end < len(selector) && bracketCount > 0 {
+					if selector[end] == '(' {
+						bracketCount++
+					} else if selector[end] == ')' {
+						bracketCount--
+					}
+					end++
+				}
+
+				if bracketCount != 0 {
+					return "", fmt.Errorf("unmatched brackets in count expression")
+				}
+
+				countXPath := selector[start+6 : end-1] // 去掉 count( 和最后的 )
+				count, err := e.evaluateCount(countXPath, element, doc)
+				if err != nil {
+					return "", err
+				}
+
+				// 替换整个 count 表达式
+				selector = selector[:start] + fmt.Sprintf("%d", count) + selector[end:]
+			}
+
+			el := htmlquery.FindOne(element, selector)
+			if el == nil {
+				return "", fmt.Errorf("element not found for selector: %s", selector)
+			}
+			return strings.TrimSpace(htmlquery.InnerText(el)), nil
+		}
+
+		// 常规文本提取
 		el := htmlquery.FindOne(element, field.Selector)
 		if el == nil {
 			return "", fmt.Errorf("element not found for selector: %s", field.Selector)
@@ -211,7 +268,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		}
 		nestedItem := make(ExtractedItem)
 		for _, nestedField := range field.Fields {
-			nestedValue, err := e.extractField(nestedElement, nestedField, url)
+			nestedValue, err := e.extractField(nestedElement, nestedField, url, doc)
 			if err != nil {
 				continue
 			}
@@ -232,7 +289,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		if len(field.Fields) == 1 && field.Fields[0].Type == "text" && field.Fields[0].Selector == "." {
 			var items []string
 			for _, el := range elements {
-				value, err := e.extractField(el, field.Fields[0], url)
+				value, err := e.extractField(el, field.Fields[0], url, doc)
 				if err != nil {
 					continue
 				}
@@ -247,7 +304,7 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 		for _, el := range elements {
 			item := make(map[string]interface{})
 			for _, subField := range field.Fields {
-				value, err := e.extractField(el, subField, url)
+				value, err := e.extractField(el, subField, url, doc)
 				if err != nil {
 					continue
 				}
@@ -262,4 +319,21 @@ func (e *StaticExtractor) extractField(element *html.Node, field Field, url stri
 	default:
 		return nil, fmt.Errorf("unsupported field type: %s", field.Type)
 	}
+}
+
+// 辅助函数：检查 XPath 表达式的基本有效性
+func isValidXPath(xpath string) bool {
+	// 检查括号是否匹配
+	bracketCount := 0
+	for _, c := range xpath {
+		if c == '(' {
+			bracketCount++
+		} else if c == ')' {
+			bracketCount--
+		}
+		if bracketCount < 0 {
+			return false
+		}
+	}
+	return bracketCount == 0
 }

@@ -15,6 +15,7 @@ import (
 var (
 	configFile = flag.String("config", "", "Path to the config JSON file")
 	url        = flag.String("url", "", "URL to extract data from")
+	static     = flag.Bool("static", false, "Use static extractor")
 )
 
 func main() {
@@ -41,8 +42,16 @@ func main() {
 		log.Fatal("url is required and must be provided via flag or in the config")
 	}
 
-	extractor := extractor.NewExtractor(config)
-	result, err := extractor.Extract(*url)
+	var result *extractor.ExtractionResult
+
+	if *static {
+		extractor := extractor.NewStaticExtractor(config)
+		result, err = extractor.Extract(*url)
+	} else {
+		extractor := extractor.NewExtractor(config)
+		result, err = extractor.Extract(*url)
+	}
+
 	if err != nil {
 		log.Fatalf("Error extracting data: %v", err)
 	}

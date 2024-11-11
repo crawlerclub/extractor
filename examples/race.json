@@ -143,9 +143,8 @@
                 },
                 {
                     "name": "horse_link",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'馬名')]]/a",
-                    "type": "attribute",
-                    "attribute": "href"
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'馬名')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'馬名')]]/a/@href",
+                    "type": "text"
                 },
                 {
                     "name": "jockey_name",
@@ -154,9 +153,8 @@
                 },
                 {
                     "name": "jockey_link",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'騎師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'騎師')]]/a",
-                    "type": "attribute",
-                    "attribute": "href"
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'騎師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'騎師')]]/a/@href",
+                    "type": "text"
                 },
                 {
                     "name": "trainer_name",
@@ -165,9 +163,8 @@
                 },
                 {
                     "name": "trainer_link",
-                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'練馬師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'練馬師')]]/a",
-                    "type": "attribute",
-                    "attribute": "href"
+                    "selector": ".//td[count(//div[@class='performance']//thead//td[contains(.,'練馬師')]/preceding-sibling::td)+1][ancestor::table//td[contains(.,'練馬師')]]/a/@href",
+                    "type": "text"
                 },
                 {
                     "name": "actual_weight",
