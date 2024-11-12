@@ -10,6 +10,8 @@ import (
 	"sync"
 
 	"extractor"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 var (
@@ -43,6 +45,9 @@ func main() {
 		log.Fatalf("Error loading URLs: %v", err)
 	}
 
+	bar := pb.Full.Start(len(urls))
+	defer bar.Finish()
+
 	results := make(chan Result)
 	var wg sync.WaitGroup
 
@@ -54,7 +59,7 @@ func main() {
 	}
 
 	done := make(chan bool)
-	go collectResults(results, done)
+	go collectResults(results, done, bar)
 
 	for _, url := range urls {
 		urlChan <- url
@@ -133,8 +138,8 @@ func worker(config extractor.ExtractorConfig, urls <-chan string, results chan<-
 	}
 }
 
-func collectResults(results <-chan Result, done chan<- bool) {
-	file, err := os.OpenFile(*outputFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+func collectResults(results <-chan Result, done chan<- bool, bar *pb.ProgressBar) {
+	file, err := os.OpenFile(*outputFile, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalf("Error opening output file: %v", err)
 	}
@@ -143,14 +148,12 @@ func collectResults(results <-chan Result, done chan<- bool) {
 	encoder := json.NewEncoder(file)
 	encoder.SetEscapeHTML(false)
 
-	count := 0
 	for result := range results {
 		if err := encoder.Encode(result); err != nil {
 			log.Printf("Error saving result for URL %s: %v", result.URL, err)
 		}
 
-		count++
-		log.Printf("Processed and saved result for URL: %s (Total: %d)", result.URL, count)
+		bar.Increment()
 	}
 	done <- true
 }
