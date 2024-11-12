@@ -17,6 +17,7 @@ var (
 	urlFile    = flag.String("urls", "", "File containing URLs to process, one per line")
 	workers    = flag.Int("workers", 2, "Number of concurrent workers")
 	outputFile = flag.String("output", "output.json", "Path to output JSON file")
+	mode       = flag.String("mode", "auto", "Mode: auto, browser or static")
 )
 
 type Result struct {
@@ -105,7 +106,15 @@ func loadURLs(path string) ([]string, error) {
 func worker(config extractor.ExtractorConfig, urls <-chan string, results chan<- Result, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	e := extractor.NewBrowserExtractor(config)
+	var e extractor.Extractor
+	switch *mode {
+	case "static":
+		e = extractor.NewStaticExtractor(config)
+	case "browser":
+		e = extractor.NewBrowserExtractor(config)
+	default:
+		e = extractor.NewExtractor(config)
+	}
 
 	for url := range urls {
 		result, err := e.Extract(url)

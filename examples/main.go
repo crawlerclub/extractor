@@ -15,7 +15,7 @@ import (
 var (
 	configFile = flag.String("config", "", "Path to the config JSON file")
 	url        = flag.String("url", "", "URL to extract data from")
-	static     = flag.Bool("static", false, "Use static extractor")
+	mode       = flag.String("mode", "auto", "Mode: auto, browser or static")
 )
 
 func main() {
@@ -43,12 +43,14 @@ func main() {
 	}
 
 	var worker extractor.Extractor
-	if *static {
+	switch *mode {
+	case "static":
 		worker = extractor.NewStaticExtractor(config)
-	} else {
+	case "browser":
 		worker = extractor.NewBrowserExtractor(config)
+	default:
+		worker = extractor.NewExtractor(config)
 	}
-
 	result, err := worker.Extract(*url)
 
 	if err != nil {

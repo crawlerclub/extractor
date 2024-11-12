@@ -9,6 +9,13 @@ type Extractor interface {
 	Extract(url string) (*ExtractionResult, error)
 }
 
+func NewExtractor(config ExtractorConfig) Extractor {
+	if config.Mode == "static" {
+		return NewStaticExtractor(config)
+	}
+	return NewBrowserExtractor(config)
+}
+
 type ExtractorConfig struct {
 	Name       string   `json:"name"`
 	Pattern    string   `json:"pattern"`
