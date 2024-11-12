@@ -26,3 +26,11 @@ go.work.sum
 
 examples/horse
 examples/examples
+
+rabbitcrawler/rabbitcrawler
+rabbitcrawler/*.gz
+rabbitcrawler/*.json
+rabbitcrawler/*.jsonl
+rabbitcrawler/*.txt
+rabbitcrawler/*.py
+rabbitcrawler/*.sh
