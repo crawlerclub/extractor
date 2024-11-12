@@ -1,4 +1,4 @@
-module rabbitcrawler
+module github.com/crawlerclub/extractor/rabbitcrawler
 
 go 1.21
 
