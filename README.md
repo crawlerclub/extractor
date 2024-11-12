@@ -13,5 +13,8 @@ A powerful web scraping tool designed for extracting structured data from websit
 ## Installation
 
 ```bash
+go env -w GOPRIVATE=github.com/crawlerclub/extractor
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+
 go install github.com/crawlerclub/extractor/rabbitcrawler@latest
 ```
