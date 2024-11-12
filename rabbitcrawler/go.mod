@@ -1,4 +1,4 @@
-module batchcrawler
+module rabbitcrawler
 
 go 1.21
 
