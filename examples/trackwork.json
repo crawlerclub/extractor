@@ -2,6 +2,7 @@
     "name": "Horse Trackwork Extractor",
     "pattern": "(?i)racing/information/Chinese/Trackwork/TrackworkResult.aspx\\?HorseId=[^&]+",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/Trackwork/TrackworkResult.aspx?HorseId=HK_2022_H203",
+    "mode": "static",
     "schemas": [
         {
             "name": "horse_info",

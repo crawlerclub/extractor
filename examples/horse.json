@@ -2,6 +2,7 @@
     "name": "Horse Info Extractor",
     "pattern": "(?i)racing/information/Chinese/Horse/Horse.aspx\\?HorseId=[^&]+&Option=1",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/Horse/Horse.aspx?HorseId=HK_2021_G372&Option=1",
+    "mode": "static",
     "schemas": [
         {
             "name": "horse_info",

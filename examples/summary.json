@@ -2,6 +2,7 @@
     "name": "HKJC Race Summary Extractor",
     "pattern": "(?i)racing/information/chinese/Racing/Summary.aspx",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/Racing/Summary.aspx",
+    "mode": "static",
     "schemas": [
         {
             "name": "race_summary",

@@ -2,6 +2,7 @@
     "name": "HKJC Race Results Extractor",
     "pattern": "(?i)racing/information/chinese/Racing/LocalResults.aspx\\?RaceDate=[^&]+",
     "example_url": "https://racing.hkjc.com/racing/information/chinese/Racing/LocalResults.aspx?RaceDate=2024/10/09",
+    "mode": "static",
     "schemas": [
         {
             "name": "race_info",

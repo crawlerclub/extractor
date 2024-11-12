@@ -42,15 +42,14 @@ func main() {
 		log.Fatal("url is required and must be provided via flag or in the config")
 	}
 
-	var result *extractor.ExtractionResult
-
+	var worker extractor.Extractor
 	if *static {
-		extractor := extractor.NewStaticExtractor(config)
-		result, err = extractor.Extract(*url)
+		worker = extractor.NewStaticExtractor(config)
 	} else {
-		extractor := extractor.NewExtractor(config)
-		result, err = extractor.Extract(*url)
+		worker = extractor.NewBrowserExtractor(config)
 	}
+
+	result, err := worker.Extract(*url)
 
 	if err != nil {
 		log.Fatalf("Error extracting data: %v", err)

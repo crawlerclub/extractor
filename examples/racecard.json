@@ -2,6 +2,7 @@
     "name": "Race Card Extractor",
     "pattern": "(?i)racing/information/Chinese/racing/RaceCard.aspx$",
     "example_url": "https://racing.hkjc.com/racing/information/Chinese/racing/RaceCard.aspx",
+    "mode": "static",
     "schemas": [
         {
             "name": "race_info",
