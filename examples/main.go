@@ -7,8 +7,7 @@ import (
 	"log"
 	"os"
 
-	"extractor"
-
+	"github.com/crawlerclub/extractor"
 	"zliu.org/goutil"
 )
 

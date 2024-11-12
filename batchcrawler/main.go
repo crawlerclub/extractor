@@ -9,9 +9,8 @@ import (
 	"os"
 	"sync"
 
-	"extractor"
-
 	"github.com/cheggaaa/pb/v3"
+	"github.com/crawlerclub/extractor"
 )
 
 var (

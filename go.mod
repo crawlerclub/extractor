@@ -1,6 +1,6 @@
-module extractor
+module github.com/crawlerclub/extractor
 
-go 1.23.1
+go 1.21
 
 require (
 	github.com/antchfx/htmlquery v1.3.3
