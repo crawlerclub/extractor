@@ -113,12 +113,10 @@ func (e *Extractor) Extract(url string) (*ExtractionResult, error) {
 			}
 			if item != nil {
 				// extract external_id
-				externalID, ok := extractExternalID(item)
-				if !ok {
-					continue
+				if externalID, ok := extractExternalID(item); ok {
+					item["external_id"] = strings.ToUpper(externalID)
+					delete(item, "_id")
 				}
-				item["external_id"] = strings.ToUpper(externalID)
-				delete(item, "_id")
 
 				// extract external_time
 				if externalTime, ok := extractExternalTime(item); ok {
@@ -359,14 +357,41 @@ func extractExternalTime(item map[string]interface{}) (time.Time, bool) {
 	if !ok {
 		return time.Time{}, false
 	}
+	loc, err := time.LoadLocation("Asia/Hong_Kong")
+	if err != nil {
+		return time.Time{}, false
+	}
 
 	switch timeValue := timeItem.(type) {
 	case string:
-		loc, err := time.LoadLocation("Asia/Hong_Kong")
-		if err != nil {
-			return time.Time{}, false
-		}
 		if t, err := time.ParseInLocation("2006/01/02", timeValue, loc); err == nil {
+			return t, true
+		}
+	case ExtractedItem:
+		type timeField struct {
+			FieldK string
+			FieldV string
+		}
+		timeFields := []timeField{}
+		for timek, timev := range timeValue {
+			if !strings.HasPrefix(timek, "_time") {
+				continue
+			}
+			if fieldV, ok := timev.(string); ok {
+				timeFields = append(timeFields, timeField{
+					FieldK: timek,
+					FieldV: fieldV,
+				})
+			}
+		}
+		sort.Slice(timeFields, func(i, j int) bool {
+			return timeFields[i].FieldK < timeFields[j].FieldK
+		})
+		timeParts := []string{}
+		for _, timeField := range timeFields {
+			timeParts = append(timeParts, timeField.FieldV)
+		}
+		if t, err := time.ParseInLocation("2006/01/02", strings.Join(timeParts, "/"), loc); err == nil {
 			return t, true
 		}
 	}

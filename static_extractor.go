@@ -75,12 +75,10 @@ func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 			}
 			if item != nil {
 				// extract external_id
-				externalID, ok := extractExternalID(item)
-				if !ok {
-					continue
+				if externalID, ok := extractExternalID(item); ok {
+					item["external_id"] = strings.ToUpper(externalID)
+					delete(item, "_id")
 				}
-				item["external_id"] = strings.ToUpper(externalID)
-				delete(item, "_id")
 
 				// extract external_time
 				if externalTime, ok := extractExternalTime(item); ok {
