@@ -24,13 +24,12 @@ go.work.sum
 # env file
 .env
 
-examples/horse
-examples/examples
+cmd/*/rabbitcrawler
+cmd/*/*.gz
+cmd/*/*.json
+cmd/*/*.jsonl
+cmd/*/*.txt
+cmd/*/*.py
+cmd/*/*.sh
 
-rabbitcrawler/rabbitcrawler
-rabbitcrawler/*.gz
-rabbitcrawler/*.json
-rabbitcrawler/*.jsonl
-rabbitcrawler/*.txt
-rabbitcrawler/*.py
-rabbitcrawler/*.sh
+cmd/*/rabbitextract
