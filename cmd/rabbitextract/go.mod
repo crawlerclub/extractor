@@ -3,11 +3,9 @@ module github.com/crawlerclub/extractor/cmd/rabbitextract
 go 1.21
 
 require (
-	github.com/crawlerclub/extractor v0.0.0-20241112142040-3a90972a40c1
+	github.com/crawlerclub/extractor v0.0.0-20241114070731-dc4ce7eca353
 	zliu.org/goutil v0.0.0-20241031150925-efd2494eb218
 )
-
-replace github.com/crawlerclub/extractor => ../..
 
 require (
 	github.com/antchfx/htmlquery v1.3.3 // indirect

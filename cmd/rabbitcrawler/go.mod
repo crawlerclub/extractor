@@ -4,10 +4,8 @@ go 1.21
 
 require (
 	github.com/cheggaaa/pb/v3 v3.1.5
-	github.com/crawlerclub/extractor v0.0.0-20241112142040-3a90972a40c1
+	github.com/crawlerclub/extractor v0.0.0-20241114070731-dc4ce7eca353
 )
-
-replace github.com/crawlerclub/extractor => ../..
 
 require (
 	github.com/VividCortex/ewma v1.2.0 // indirect
