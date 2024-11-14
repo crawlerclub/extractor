@@ -15,6 +15,7 @@ var (
 	configFile = flag.String("config", "", "Path to the config JSON file")
 	url        = flag.String("url", "", "URL to extract data from")
 	mode       = flag.String("mode", "auto", "Mode: auto, browser or static")
+	outputFile = flag.String("output", "", "Output file path (optional, defaults to stdout)")
 )
 
 func main() {
@@ -63,10 +64,17 @@ func main() {
 		}
 	}
 
-	jsonData, err := goutil.JSONMarshalIndent(result.SchemaResults, "", "  ")
+	jsonData, err := goutil.JSONMarshal(result.SchemaResults)
 	if err != nil {
 		log.Fatalf("Error converting results to JSON: %v", err)
 	}
 
-	fmt.Println(string(jsonData))
+	if *outputFile != "" {
+		err = os.WriteFile(*outputFile, jsonData, 0644)
+		if err != nil {
+			log.Fatalf("Error writing to output file: %v", err)
+		}
+	} else {
+		fmt.Println(string(jsonData))
+	}
 }
