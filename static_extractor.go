@@ -2,13 +2,12 @@ package extractor
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"regexp"
 	"strings"
 	"time"
 
 	"github.com/antchfx/htmlquery"
+	"github.com/crawlerclub/httpcache"
 	"golang.org/x/net/html"
 )
 
@@ -22,19 +21,8 @@ func NewStaticExtractor(config ExtractorConfig) *StaticExtractor {
 
 func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 	// Create HTTP client with reasonable timeout
-	client := &http.Client{
-		Timeout: 30 * time.Second,
-	}
-
-	// Make HTTP request
-	resp, err := client.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch URL: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Read response body
-	htmlContent, err := io.ReadAll(resp.Body)
+	client := httpcache.GetClient()
+	htmlContent, err := client.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
