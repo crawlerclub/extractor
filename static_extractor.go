@@ -20,13 +20,13 @@ func NewStaticExtractor(config ExtractorConfig) *StaticExtractor {
 }
 
 func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
-	// Create HTTP client with reasonable timeout
 	client := httpcache.GetClient()
 	htmlContent, err := client.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
+	needDelete := true
 	result := &ExtractionResult{
 		SchemaResults: make(map[string]SchemaResult),
 		Errors:        make([]ExtractionError, 0),
@@ -62,6 +62,7 @@ func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 				result.Errors = append(result.Errors, errs...)
 			}
 			if item != nil {
+				needDelete = false
 				// extract external_id
 				if externalID, ok := extractExternalID(item); ok {
 					item["external_id"] = strings.ToUpper(externalID)
@@ -80,6 +81,10 @@ func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 		}
 
 		result.SchemaResults[schema.Name] = schemaResult
+	}
+
+	if needDelete {
+		client.DeleteURL(url)
 	}
 
 	return result, nil
