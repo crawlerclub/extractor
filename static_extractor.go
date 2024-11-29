@@ -21,7 +21,7 @@ func NewStaticExtractor(config ExtractorConfig) *StaticExtractor {
 
 func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 	client := httpcache.GetClient()
-	htmlContent, err := client.Get(url)
+	htmlContent, finalURL, err := client.GetWithFinalURL(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
@@ -30,6 +30,7 @@ func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
 	result := &ExtractionResult{
 		SchemaResults: make(map[string]SchemaResult),
 		Errors:        make([]ExtractionError, 0),
+		FinalURL:      finalURL,
 	}
 
 	doc, err := htmlquery.Parse(strings.NewReader(string(htmlContent)))

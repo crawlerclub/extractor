@@ -47,6 +47,7 @@ type ExtractedItem map[string]interface{}
 type ExtractionResult struct {
 	SchemaResults map[string]SchemaResult
 	Errors        []ExtractionError
+	FinalURL      string
 }
 
 type SchemaResult struct {

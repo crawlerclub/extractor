@@ -4,7 +4,7 @@ go 1.23.1
 
 require (
 	github.com/antchfx/htmlquery v1.3.3
-	github.com/crawlerclub/httpcache v0.0.0-20241128021139-60d1136f833a
+	github.com/crawlerclub/httpcache v0.0.0-20241129161459-eb809f625012
 	github.com/go-rod/rod v0.116.2
 	golang.org/x/net v0.31.0
 )

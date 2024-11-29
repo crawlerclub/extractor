@@ -33,6 +33,8 @@ func (e *BrowserExtractor) Extract(url string) (*ExtractionResult, error) {
 
 	page.MustWaitStable()
 
+	result.FinalURL = page.MustInfo().URL
+
 	// Extract items for each schema
 	for _, schema := range e.Config.Schemas {
 		schemaResult := SchemaResult{
