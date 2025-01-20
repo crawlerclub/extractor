@@ -4,9 +4,9 @@ go 1.23.1
 
 require (
 	github.com/antchfx/htmlquery v1.3.3
-	github.com/crawlerclub/httpcache v0.0.0-20241129161459-eb809f625012
+	github.com/crawlerclub/httpcache v0.0.0-20250120151442-e6015bd19b14
 	github.com/go-rod/rod v0.116.2
-	golang.org/x/net v0.31.0
+	golang.org/x/net v0.34.0
 )
 
 require (
@@ -18,8 +18,8 @@ require (
 	github.com/liuzl/store v0.0.0-20190530065605-e2dbcd3c77fc // indirect
 	github.com/microcosm-cc/bluemonday v1.0.27 // indirect
 	github.com/projectdiscovery/blackrock v0.0.1 // indirect
-	github.com/projectdiscovery/useragent v0.0.80 // indirect
-	github.com/projectdiscovery/utils v0.2.21 // indirect
+	github.com/projectdiscovery/useragent v0.0.88 // indirect
+	github.com/projectdiscovery/utils v0.4.7 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/ysmood/fetchup v0.2.4 // indirect
@@ -27,5 +27,5 @@ require (
 	github.com/ysmood/got v0.40.0 // indirect
 	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.9.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 )

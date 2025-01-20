@@ -19,11 +19,29 @@ func NewStaticExtractor(config ExtractorConfig) *StaticExtractor {
 	return &StaticExtractor{Config: config}
 }
 
+func (e *StaticExtractor) ExtractWithoutCache(url string) (*ExtractionResult, error) {
+	return e.extract(url, false)
+}
+
 func (e *StaticExtractor) Extract(url string) (*ExtractionResult, error) {
+	return e.extract(url, true)
+}
+
+func (e *StaticExtractor) extract(url string, cache bool) (*ExtractionResult, error) {
 	client := httpcache.GetClient()
-	htmlContent, finalURL, err := client.GetWithFinalURL(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %v", err)
+	var htmlContent []byte
+	var finalURL string
+	var err error
+	if cache {
+		htmlContent, finalURL, err = client.GetWithFinalURL(url)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response body: %v", err)
+		}
+	} else {
+		htmlContent, finalURL, err = client.FetchWithFinalURL(url)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response body: %v", err)
+		}
 	}
 
 	needDelete := true

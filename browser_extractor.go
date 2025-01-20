@@ -22,6 +22,10 @@ func NewBrowserExtractor(config ExtractorConfig) *BrowserExtractor {
 	return &BrowserExtractor{Config: config, Browser: browser}
 }
 
+func (e *BrowserExtractor) ExtractWithoutCache(url string) (*ExtractionResult, error) {
+	return e.Extract(url)
+}
+
 func (e *BrowserExtractor) Extract(url string) (*ExtractionResult, error) {
 	result := &ExtractionResult{
 		SchemaResults: make(map[string]SchemaResult),

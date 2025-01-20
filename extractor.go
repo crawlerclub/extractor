@@ -7,6 +7,7 @@ const (
 
 type Extractor interface {
 	Extract(url string) (*ExtractionResult, error)
+	ExtractWithoutCache(url string) (*ExtractionResult, error)
 }
 
 func NewExtractor(config ExtractorConfig) Extractor {
