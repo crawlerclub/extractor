@@ -33,3 +33,5 @@ cmd/*/*.py
 cmd/*/*.sh
 
 cmd/*/rabbitextract
+.httpcache
+
